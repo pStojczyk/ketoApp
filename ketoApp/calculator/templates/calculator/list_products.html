@@ -1,0 +1,50 @@
+{% extends 'calculator/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1> My List </h1>
+    <strong>{{ date }}</strong>
+    {% if product_by_date %}
+    {% for product in product_by_date %}
+        <br>
+        <div class="content-section">
+            <h6> -----------------------</h6>
+            <h4> {{ product.grams  }} GRAMS {{ product.name|upper }} </h4>
+            <br>
+
+            <h5> {{ product.kcal}} kcal </h5>
+
+            <h5> FAT : {{ product.fat }} grams </h5>
+
+            <h5> PROTEIN : {{ product.protein }} grams </h5>
+
+            <h5> CARBS : {{ product.carb }} grams </h5>
+            <br>
+             <p class="d-inline-flex gap-1">
+                <a class = "btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'product_update' product.id %}">Update</a>
+            </p>
+             <p class="d-inline-flex gap-1">
+                <a class = "btn btn-danger btn-sm mt-1 mb-1" href="{% url 'product_delete' product.id %}">Delete</a>
+            </p>
+        </div>
+    {% empty %}
+       <h5>THE LIST IS EMPTY, CHECK ANOTHER DAY OR RETURN TO THE PROFILE</h5>
+    {% endfor %}
+    {% else %}
+    <br/><br/>
+    <h5>THE LIST IS EMPTY, CHECK ANOTHER DAY OR RETURN TO THE PROFILE</h5>
+     <p class="d-inline-flex gap-1">
+         <a class = "btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'calendar'%}">Back to calendar</a>
+     </p>
+    {% endif %}
+    <br/>
+        {% if product_by_date %}
+        <div>
+             <p class="d-inline-flex gap-1">
+                <a href="{% url 'calendar' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Back to calendar </a>
+            </p>
+             <p class="d-inline-flex gap-1">
+                <a href="{% url 'full_day_macronutrients' user.ketoappuser.id %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Summary </a>
+            </p>
+        {%endif %}
+        </div>
+{% endblock %}
