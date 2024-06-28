@@ -1,7 +1,7 @@
 import datetime
 from django.db import models
-from django.db.models import Sum
 from users.models import KetoAppUser
+
 
 
 class Product(models.Model):
@@ -16,11 +16,15 @@ class Product(models.Model):
 
 
 class FullDayIntake(models.Model):
-    date = models.DateField(null=False, blank=True)
+    date = models.DateField(null=True, blank=True)
     total_kcal = models.PositiveIntegerField(null=True)
     total_carbs = models.PositiveIntegerField(null=True)
     total_fat = models.PositiveIntegerField(null=True)
     total_protein = models.PositiveIntegerField(null=True)
     product = models.ManyToManyField(Product, null=False)
     user = models.ManyToManyField(KetoAppUser, null=False)
+    start = models.DateField(null=True, blank=True)
+
+
+
 

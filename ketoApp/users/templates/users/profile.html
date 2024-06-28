@@ -1,75 +1,65 @@
 {% extends 'calculator/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
-    <h2>Hello {{ user.username }}! What would you like to do?</h2>
-    <br>
-    <br>
+
+<div class="container">
     <div class="row">
-        <div class="col">
-            <p class="d-inline-flex gap-1">
-                <a href="{% url 'keto_app_user_update' user.ketoappuser.id %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true">1. BODY PARAMETERS </a>
-            </p>
-            <br>
-            <br>
-            <p class="d-inline-flex gap-1">
-                <a href="{% url 'keto_app_user_demand_detail' user.ketoappuser.demand.id %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true">2. DAILY REQUIREMENTS</a>
-            </p>
-             <br>
+        <div class="col-sm-6">
+            <h1 class="display-4">
+                 <i class="bi bi-card-checklist"></i>
+                <strong>MY LIST</strong>
+            </h1>
+              <h1 class="display-6"> {{ today }}</h1>
             <br>
             <p class="d-inline-flex gap-1">
-                <a href="{% url 'product_create' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true">3. ADD PRODUCT</a>
-            </p>
-            <br>
-            <br>
-            <p class="d-inline-flex gap-1">
-                <a href="{% url 'calendar' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> 4. CALENDAR </a>
-             </p>
-            <br>
-            <br>
-            <p class="d-inline-flex gap-1">
-                <a href="{% url 'full_day_macronutrients' user.ketoappuser.id %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> 5. TODAY'S SUMMARY </a>
-            </p>
-        </div>
-        <div class="col">
-            <h1><strong>MY LIST</strong> </h1>
-              <h4> {{ today }}</h4>
-            <br/>
-            {% if not products_list %}
-           <strong>THE LIST IS EMPTY, ADD PRODUCT!</strong>
-            {% else %}
-            {% endif %}
-                {% for product in products_list %}
-        <br>
-        <div class="content-section">
-            <h6> -----------------------</h6>
-            <h4> {{ product.grams  }} GRAMS {{ product.name|upper }} </h4>
-            <br>
-
-            <h5> {{ product.kcal}} kcal </h5>
-
-            <h5> FAT : {{ product.fat }} grams </h5>
-
-            <h5> PROTEIN : {{ product.protein }} grams </h5>
-
-            <h5> CARBS : {{ product.carb }} grams </h5>
-            <br>
-
-        </div>
-            <p class="d-inline-flex gap-1">
-                <a class = "btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'product_update' product.id %}">Update</a>
+                <a class = "btn btn-outline-warning" href="{% url 'product_create' %}">Add Product <i class="bi bi-plus-square"></i></a>
             </p>
              <p class="d-inline-flex gap-1">
-                <a class = "btn btn-danger btn-sm mt-1 mb-1" href="{% url 'product_delete' product.id %}">Delete</a>
+                <a class = "btn btn-outline-dark" href="{% url 'summary' user.ketoappuser.id  %}">SUMMARY <i class="bi bi-pencil-square"></i></a>
             </p>
+            <br/>
+             {% for product in products_list %}
+                <div class="card border-warning border-2 bg-primary mb-3 ">
+                    <div class="card-header bg-danger ">
+                        <a href="{% url 'product_detail' product.id %}" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><strong>{{ product.grams  }} GRAMS {{ product.name|upper }}</strong></a>
+            </div>
+            <div class="card-body text-dark">
+                <h5 class="card-title">{{ product.kcal}} kcal</h5>
+            <p class="card-text">
+                <h6> FAT : {{ product.fat }} grams </h6>
+                <h6> PROTEIN : {{ product.protein }} grams </h6>
+                <h6> CARBS : {{ product.carb }} grams </h6>
+                </p>
 
-        {% endfor %}
-
-    <h6>----------------------</h6>
-        <p class="d-inline-flex gap-1">
-            <a href="{% url 'product_create' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Add product </a>
-        </p>
-
+            </div>
         </div>
-</div>
-    {% endblock %}
+
+             {% empty %}
+       <h3 class="text-danger">THE LIST IS EMPTY, ADD PRODUCT</h3>
+            {% endfor %}
+        </div>
+        <div class="col-sm-6">
+            <div class="d-flex justify-content-end">
+            <div class="content-section">
+        <br>
+        <div class="card border-warning text-warning bg-primary mb-3" style="max-width: 30rem;">
+    <div class="card-header bg-danger mb-3">
+        <h1 class="display-6 "><i class="bi bi-fire"></i> My Caloric Demand </h1>
+
+    </div>
+  <div class="card-body">
+    <h5 class="card-title">{{ demand.kcal}} kcal</h5>
+    <p class="card-text">
+         <h6> FAT : {{ demand.fat }} grams </h6>
+
+        <h6> PROTEIN : {{ demand.protein }} grams </h6>
+        <h6> CARBS : {{ demand.carbs }} grams </h6>
+    </p>
+  </div>
+        </div>
+            </div>
+          </div>
+          </div>
+          </div>
+      </div>
+{% endblock %}

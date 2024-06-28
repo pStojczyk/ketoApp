@@ -1,14 +1,17 @@
 import datetime
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView, RedirectView
+
 from .forms import CalendarForm, ProductRequestForm
 from .models import FullDayIntake, Product
 from .utils import GetConnection
-from django.db.models import Sum
+
 
 class ProductMacroNutrientsCreate(LoginRequiredMixin, View):
 
@@ -28,7 +31,8 @@ class ProductMacroNutrientsCreate(LoginRequiredMixin, View):
             )
             product_macronutrients.save()
 
-            return redirect("product_detail", pk=product_macronutrients.pk)
+            return redirect("profile")
+            # return redirect("product_detail", pk=product_macronutrients.pk)
 
         return render(request, "calculator/product_nutrients_form.html", {'form': form})
 
@@ -86,7 +90,7 @@ class CalendarView(LoginRequiredMixin, View):
         return render(request, "calculator/calendar_form.html", {'form': form})
 
 
-class ProductListByDateView(TemplateView):
+class ProductListByDateView(LoginRequiredMixin, TemplateView):
     template_name = "calculator/list_products.html"
 
     def get_context_data(self, **kwargs):
@@ -106,91 +110,128 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
         return reverse_lazy('products_list_by_date', args=[self.object.date])
 
 
-class SummaryDetailView(LoginRequiredMixin, DetailView):
-    model = FullDayIntake
-    template_name = 'calculator/full_day_macronutrients.html'
 
-    # def get_object(self, **kwargs):
-    #     date = self.kwargs.get('date')
-    #     products = Product.objects.filter(date=date)
-    #     total_kcal = sum(product.kcal for product in products)
-    #     total_fat = sum(product.fat for product in products)
-    #     total_protein = sum(product.protein for product in products)
-    #     total_carbs = sum(product.carb for product in products)
-    #
-    #     FullDayIntake.objects.update_or_create(
-    #         date=date,
-    #         defaults={
-    #             'total_kcal': total_kcal,
-    #             'total_carbs': total_carbs,
-    #             'total_fat': total_fat,
-    #             'total_protein': total_protein,
-    #         })
+# detailview?
+# class SummaryView(LoginRequiredMixin, TemplateView):
+#     template_name = 'calculator/summary.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # context['date'] = self.kwargs.get('date')
+#         context['date'] = '2024-06-19'
+#
+#         context['total_kcal'] = Product.objects.filter(date=context['date']).aggregate(Sum("kcal"))['kcal__sum']
+#         context['total_fat'] = Product.objects.filter(date=context['date']).aggregate(Sum("fat"))['fat__sum']
+#         context['total_protein'] = Product.objects.filter(date=context['date']).aggregate(Sum("protein"))['protein__sum']
+#         context['total_carbs'] = Product.objects.filter(date=context['date']).aggregate(Sum("carb"))['carb__sum']
+
+        # context['product_by_date'] = Product.objects.filter(date=context['date'])
+        # context['total_kcal'] = sum(product.kcal for product in context['product_by_date'])
+        # context['total_fat'] = sum(product.fat for product in context['product_by_date'])
+        # context['total_protein'] = sum(product.protein for product in context['product_by_date'])
+        # context['total_carbs'] = sum(product.carb for product in context['product_by_date'])
+
+        # FullDayIntake.objects.update_or_create(
+        #     date=context['date'],
+        #     defaults={
+        #         'total_kcal': context['total_kcal'],
+        #         'total_carbs': context['total_carbs'],
+        #         'total_fat': context['total_fat'],
+        #         'total_protein': context['total_protein'],
+        #         'start': context['date'],
+        #     })
+        #
+        # return context
+
+
+class SummaryView(LoginRequiredMixin, DetailView):
+    model = FullDayIntake
+    template_name = 'calculator/summary.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        date = self.kwargs.get('date')
-        products = Product.objects.filter(date=date)
-        total_kcal = sum(product.kcal for product in products)
-        total_fat = sum(product.fat for product in products)
-        total_protein = sum(product.protein for product in products)
-        total_carbs = sum(product.carb for product in products)
+        context['date'] = self.get_object().date
+
+        context['total_kcal'] = Product.objects.filter(date=context['date']).aggregate(Sum("kcal"))['kcal__sum']
+        context['total_fat'] = Product.objects.filter(date=context['date']).aggregate(Sum("fat"))['fat__sum']
+        context['total_protein'] = Product.objects.filter(date=context['date']).aggregate(Sum("protein"))['protein__sum']
+        context['total_carbs'] = Product.objects.filter(date=context['date']).aggregate(Sum("carb"))['carb__sum']
+
+        # product_by_date = Product.objects.filter(date=date)
+        # total_kcal = sum(product.kcal for product in product_by_date)
+        # total_fat = sum(product.fat for product in product_by_date)
+        # total_protein = sum(product.protein for product in product_by_date)
+        # total_carbs = sum(product.carb for product in product_by_date)
+        # print(total_carbs)
+
+        # total_kcal = Product.objects.filter(date=date).aggregate(Sum('kcal'))['kcal__sum']
+        # print(total_kcal)
+        # total_fat = Product.objects.filter(date=date).aggregate(Sum("fat"))['fat__sum']
+        # print(total_fat)
+        # total_protein = Product.objects.filter(date=date).aggregate(Sum('protein'))['protein__sum']
+        # total_carbs = Product.objects.filter(date=date).aggregate(Sum('carb'))['carb__sum']
 
         FullDayIntake.objects.update_or_create(
-            date=date,
+            date=context['date'],
             defaults={
-                'total_kcal': total_kcal,
-                'total_carbs': total_carbs,
-                'total_fat': total_fat,
-                'total_protein': total_protein,
+                'total_kcal': context['total_kcal'],
+                'total_carbs': context['total_carbs'],
+                'total_fat': context['total_fat'],
+                'total_protein': context['total_protein'],
+                'start': context['date'],
             })
 
-        context['date'] = date
-        context['total_kcal'] = total_kcal
-        context['total_carbs'] = total_carbs
-        context['total_fat'] = total_fat
-        context['total_protein'] = total_protein
-
         return context
-    #
 
 
 
 
 
-        # total = FullDayIntake.objects.update(
-        #     {
+        #
+        # summary_obj = FullDayIntake.objects.update_or_create(
+        #     date=date,
+        #     defaults={
         #         'total_kcal': total_kcal,
         #         'total_carbs': total_carbs,
         #         'total_fat': total_fat,
         #         'total_protein': total_protein,
+        #         'start': date,
         #     })
+        #
+        #
 
-        # return redirect('summary_detail', pk=total.pk)
+
+class Calendar2View(LoginRequiredMixin, TemplateView):
+    template_name = "calculator/calendar2.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['events'] = FullDayIntake.objects.all()
+        return context
+
+# json , json response view, view
+def all_events(request):
+    events = FullDayIntake.objects.all()
+    out = []
+    for event in events:
+        out.append({
+            'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
+                     f'TOTAL CARBS: {event.total_carbs}',
+            'start': event.start,
+            'url': reverse_lazy('product_create'),
+
+        })
+    return JsonResponse(out, safe=False)
 
 
-# def sum_all_products_nutrients():
-#     queryset = Product.objects.filter(date=datetime.date.today())
-#     total_kcal = queryset.aggregate(Sum("kcal"))
-#     total_fat = queryset.aggregate(Sum("fat"))
-#     total_protein = queryset.aggregate(Sum("protein"))
-#     total_carbs = queryset.aggregate(Sum("carb"))
 
-    # products = Product.objects.filter(date=datetime.date.today())
-    # total_kcal = sum(product.kcal for product in products)
-    # total_fat = sum(product.fat for product in products)
-    # total_protein = sum(product.protein for product in products)
-    # total_carbs = sum(product.carb for product in products)
 
-    # total = FullDayIntake.objects.update_or_create(
-    #         date=datetime.date.today(),
-    #         defaults={
-    #             'total_kcal': total_kcal,
-    #             'total_carbs': total_carbs,
-    #             'total_fat': total_fat,
-    #             'total_protein': total_protein,
-    #         })
-    # return redirect('full_day_macronutrients', pk=total.pk)
-    #
-    #
-    #
+def remove_event(request):
+    id = request.GET.get("id")
+    event = FullDayIntake.objects.get(id=id)
+    event.delete()
+    data = {}
+    return JsonResponse(data)
+
+
+

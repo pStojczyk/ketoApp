@@ -1,7 +1,8 @@
 {% extends 'calculator/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
+ <div class="container">
+    <div class="col-md-6">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -9,13 +10,14 @@
                 {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+                <button class="btn btn-outline-warning" type="submit">Sign Up</button>
             </div>
         </form>
         <div class="border-top pt-3">
             <small class="text-muted">
-                Have an account? <a class="ml-2" href="{% url 'login' %}">Sign In</a>
+                Have an account? <a class="ml-2" href="{% url 'login' %}"> Login </a>
             </small>
         </div>
     </div>
+ </div>
 {% endblock%}

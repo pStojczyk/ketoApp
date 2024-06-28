@@ -1,26 +1,29 @@
 {% extends 'calculator/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-        <div class="content-section">
-            <h1> {{ object.grams  }} GRAMS {{ object.name|upper }} </h1>
-            <br>
-            <br>
-            <h1> {{ object.kcal}} kcal </h1>
-            <br>
-            <h2> FAT : {{ object.fat }} grams </h2>
-            <br>
-            <h2> PROTEIN : {{ object.protein }} grams </h2>
-            <br>
-            <h2> CARBS : {{ object.carb }} grams </h2>
-            <br>
-            <p class="d-inline-flex gap-1">
-            <a href="{% url 'product_create' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Calculate another product </a>
-        </p>
-            <p class="d-inline-flex gap-1">
-            <a href="{% url 'profile' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Add to daily list </a>
-        </p>
-             <p class="d-inline-flex gap-1">
-            <a href="{% url 'full_day_macronutrients' user.ketoappuser.id %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Summary </a>
-        </p>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+             <div class="card border-warning border-2 text-dark bg-primary mb-3">
+                    <div class="card-header">
+                        <h4> {{ object.grams  }} GRAMS {{ object.name|upper }} </h4>
+            </div>
+
+            <div class="card-body">
+                <h5 class="card-title">{{ object.kcal}} kcal</h5>
+            <p class="card-text">
+                <h6> FAT : {{ object.fat }} grams </h6>
+                <h6> PROTEIN : {{ object.protein }} grams </h6>
+                <h6> CARBS : {{ object.carb }} grams </h6>
+                </p>
+
+            </div>
+                  </div>
+                  <a class = "btn btn-outline-primary btn-sm mt-1 mb-1" href="{% url 'product_update' product.id %}">Update <i class="bi bi-arrow-clockwise"></i></a>
+                <a class = "btn btn-outline-dark btn-sm mt-1 mb-1" href="{% url 'product_delete' product.id %}">Delete <i class="bi bi-trash3"></i></a>
+
+                 </div>
         </div>
+         </div>
 {% endblock%}

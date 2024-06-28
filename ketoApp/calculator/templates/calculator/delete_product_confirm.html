@@ -1,17 +1,23 @@
 {% extends 'calculator/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="content-section">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
     <form method="POST">
         {% csrf_token %}
+        <br>
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Delete Product</legend>
-            <h3>Are you sure you want to delete {{ object.name }} from the list?</h3>
+            <h1 class="display-6">Sure you want to delete {{ object.name }}?</h1>
         </fieldset>
+        <br>
         <div class="form-group">
             <button class="btn btn-outline-danger" type="submit">Yes</button>
             <a class = "btn btn-outline-secondary" href="{% url 'products_list_by_date' object.date %}">Cancel</a>
         </div>
     </form>
 </div>
+  </div>
+   </div>
 {% endblock%}

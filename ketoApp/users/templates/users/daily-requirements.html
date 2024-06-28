@@ -1,22 +1,28 @@
 {% extends 'calculator/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <h1> Your daily macronutrient requirements are: </h1>
-        <br>
-        <br>
-        <h1> {{ object.kcal}} kcal </h1>
-        <br>
-        <h2> FAT : {{ object.fat }} grams </h2>
-        <br>
-        <h2> PROTEIN : {{ object.protein }} grams </h2>
-        <br>
-        <h2> CARBS : {{ object.carbs }} grams </h2>
-        <br>
-        <p class="d-inline-flex gap-1">
-         <a href="{% url 'product_create' %}" class="btn btn-primary active" role="button" data-bs-toggle="button" aria-pressed="true"> Calculate single product and full meal macronutrients </a>
-    </p>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1 class="display-4"> My Caloric Demand </h1>
+            <br>
+             <div class="card border-warning border-2 text-dark bg-primary mb-3">
+                    <div class="card-header">
+                        <h1 class="display-4">{{ object.kcal}} kcal</h1>
+
     </div>
+                 <div class="card-body">
+          <p class="card-text">
+        <h4> FAT : {{ object.fat }} grams </h4>
+        <br>
+        <h4> PROTEIN : {{ object.protein }} grams </h4>
+        <br>
+        <h4> CARBS : {{ object.carbs }} grams </h4>
+            </p>
+    </div>
+               </div>
+        </div>
+         </div>
+         </div>
+<div>
 {% endblock%}
-
-

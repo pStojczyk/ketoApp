@@ -1,0 +1,29 @@
+{% extends 'calculator/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+ <div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h1 class="display-4"> SUMMARY </h1>
+
+             <h1 class="display-6">{{ date }}</h1>
+<br>
+              <div class="card border-warning border-2 mb-3 bg-primary mb-3">
+                    <div class="card-header">
+                        <h1 class="display-4">{{ total_kcal }} kcal</h1>
+            </div>
+                      <div class="card-body">
+            <p class="card-text">
+                <h6> FAT : {{ total_fat}} grams </h6>
+                  <br>
+                <h6> PROTEIN : {{ total_protein }} grams </h6>
+                  <br>
+                <h6> CARBS : {{ total_carbs}} grams </h6>
+                </p>
+            </div>
+        </div>
+        </div>
+     </div>
+</div>
+{% endblock %}

@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
-    'crispy_bootstrap4',
+    'django_bootstrap5',
+    'crispy_bootstrap5',
     'calculator.apps.CalculatorConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
@@ -40,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_sass',
     'widget_tweaks',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -116,13 +119,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 LOGIN_REDIRECT_URL = 'profile'
 
@@ -134,4 +140,4 @@ API_URL = 'https://api.edamam.com/api/nutrition-data'
 
 USE_L10N = False
 
-DATE_INPUT_FORMATS = ['%Y/%m/%d']
+

@@ -12,8 +12,8 @@ def name_validator(value):
 
 
 class ProductRequestForm(forms.Form):
-    product_name = forms.CharField(label="Enter product", validators=[name_validator])
-    grams = forms.IntegerField(label="Enter grams")
+    product_name = forms.CharField(label="Product", validators=[name_validator])
+    grams = forms.IntegerField(label="Grams")
 
 
 class Date(forms.DateInput):
