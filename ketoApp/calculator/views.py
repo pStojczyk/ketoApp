@@ -193,30 +193,11 @@ class CalendarView(LoginRequiredMixin, TemplateView):
 #         return JsonResponse(out, safe=False)
 
 
-
-# def all_events(request):
-#     events = FullDayIntake.objects.all()
-#     out = []
-#     for event in events:
-#         out.append({
-#             'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
-#                      f'TOTAL CARBS: {event.total_carbs}',
-#
-#             'start': event.start,
-#             'url': reverse_lazy('products_list_by_date', args=[event.date]),
-#
-#
-#         })
-
-#     return JsonResponse(out, safe=False)
-
-
 def all_events(request):
     events = FullDayIntake.objects.all()
     out = []
     for event in events:
         out.append({
-            # 'title': f'\n\nTOTAL KCAL: {event.total_kcal}',
             'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
                      f'TOTAL CARBS: {event.total_carbs}',
 
@@ -225,25 +206,6 @@ def all_events(request):
 
              })
     return JsonResponse(out, safe=False)
-
-
-        # out.append({
-        #     'title': f'TOTAL FAT: {event.total_fat} g',
-        #     'start': event.start,
-        #     'url': reverse_lazy('products_list_by_date', args=[event.date]),
-        # })
-        # out.append({
-        #     'title': f'TOTAL PROTEIN: {event.total_protein} g',
-        #     'start': event.start,
-        #     'url': reverse_lazy('products_list_by_date', args=[event.date]),
-        # })
-        # out.append({
-        #     'title': f'TOTAL CARBS: {event.total_carbs} g',
-        #     'start': event.start,
-        #     'url': reverse_lazy('products_list_by_date', args=[event.date]),
-        # })
-
-
 
 
 class RemoveEventView(View):
