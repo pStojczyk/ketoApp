@@ -5,9 +5,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, TemplateView
-from django.shortcuts import get_object_or_404
 from .models import Demand, KetoAppUser
-from calculator.models import Product
+from calculator.models import Product, FullDayIntake
+
 
 
 class Register(CreateView):
@@ -44,6 +44,8 @@ class Profile(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['today'] = datetime.date.today()
+        if FullDayIntake.objects.filter(date=context['today']).exists():
+            context['fulldayintake'] = FullDayIntake.objects.get(date=context['today'])
         context['products_list'] = Product.objects.filter(date=context['today'])
         # demand_pk = self.kwargs.get('pk')
         # demand = get_object_or_404(Demand, pk=demand_pk)
