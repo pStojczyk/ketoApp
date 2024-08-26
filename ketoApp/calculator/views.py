@@ -175,7 +175,6 @@ class CalendarView(LoginRequiredMixin, TemplateView):
 def all_events(request):
     events = FullDayIntake.objects.all()
     out = []
-    print(events.values('date'), events.count())
     for event in events:
         out.append({
             'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
