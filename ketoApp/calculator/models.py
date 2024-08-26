@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from django.db.models import Sum
 from users.models import KetoAppUser
 
 
@@ -13,6 +14,30 @@ class Product(models.Model):
     fat = models.PositiveIntegerField(null=True)
     protein = models.PositiveIntegerField(null=True)
     user = models.ManyToManyField(KetoAppUser, null=False)
+
+    def update_or_create_fulldayintake(self):
+
+        totals = Product.objects.filter(date=self.date).aggregate(
+            total_kcal=Sum("kcal"),
+            total_fat=Sum("fat"),
+            total_protein=Sum("protein"),
+            total_carbs=Sum("carb"),
+        )
+
+        total_kcal = totals['total_kcal'] or 0
+        total_fat = totals['total_fat'] or 0
+        total_protein = totals['total_protein'] or 0
+        total_carbs = totals['total_carbs'] or 0
+
+        obj, created = FullDayIntake.objects.update_or_create(
+            date=self.date,
+            defaults={
+                'total_kcal': total_kcal,
+                'total_carbs': total_carbs,
+                'total_fat': total_fat,
+                'total_protein': total_protein,
+
+            })
 
 
 class FullDayIntake(models.Model):

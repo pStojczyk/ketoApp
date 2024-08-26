@@ -146,27 +146,6 @@ class SummaryView(LoginRequiredMixin, DetailView):
     model = FullDayIntake
     template_name = 'calculator/summary.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['date'] = self.get_object().date
-
-        context['total_kcal'] = Product.objects.filter(date=context['date']).aggregate(Sum("kcal"))['kcal__sum']
-        context['total_fat'] = Product.objects.filter(date=context['date']).aggregate(Sum("fat"))['fat__sum']
-        context['total_protein'] = Product.objects.filter(date=context['date']).aggregate(Sum("protein"))['protein__sum']
-        context['total_carbs'] = Product.objects.filter(date=context['date']).aggregate(Sum("carb"))['carb__sum']
-
-        FullDayIntake.objects.update_or_create(
-            date=context['date'],
-            defaults={
-                'total_kcal': context['total_kcal'],
-                'total_carbs': context['total_carbs'],
-                'total_fat': context['total_fat'],
-                'total_protein': context['total_protein'],
-                'start': context['date'],
-            })
-
-        return context
-
 
 class CalendarView(LoginRequiredMixin, TemplateView):
     template_name = "calculator/calendar2.html"
@@ -201,7 +180,7 @@ def all_events(request):
             'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
                      f'TOTAL CARBS: {event.total_carbs}',
 
-            'start': event.start,
+            'start': event.date,
             'url': reverse_lazy('products_list_by_date', args=[event.date]),
 
              })
