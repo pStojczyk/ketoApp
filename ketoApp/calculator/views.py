@@ -156,35 +156,35 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         return context
 
 
-# class AllEventsView(View):
-#     def get(self, request):
-#         events = FullDayIntake.objects.all()
-#         out = []
-#         for event in events:
-#             out.append({
-#                 'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
-#                          f'TOTAL CARBS: {event.total_carbs}',
-#                 'start': event.start,
-#                 'url': reverse_lazy('products_list_by_date', args=[event.date]),
+class AllEventsView(View):
+    def get(self, request):
+        events = FullDayIntake.objects.all()
+        out = []
+        for event in events:
+            out.append({
+                'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
+                         f'TOTAL CARBS: {event.total_carbs}',
+                'start': event.start,
+                'url': reverse_lazy('products_list_by_date', args=[event.date]),
+
+            })
+
+        return JsonResponse(out, safe=False)
+
+
+# def all_events(request):
+#     events = FullDayIntake.objects.all()
+#     out = []
+#     for event in events:
+#         out.append({
+#             'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
+#                      f'TOTAL CARBS: {event.total_carbs}',
 #
-#             })
+#             'start': event.date,
+#             'url': reverse_lazy('products_list_by_date', args=[event.date]),
 #
-#         return JsonResponse(out, safe=False)
-
-
-def all_events(request):
-    events = FullDayIntake.objects.all()
-    out = []
-    for event in events:
-        out.append({
-            'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
-                     f'TOTAL CARBS: {event.total_carbs}',
-
-            'start': event.date,
-            'url': reverse_lazy('products_list_by_date', args=[event.date]),
-
-             })
-    return JsonResponse(out, safe=False)
+#              })
+#     return JsonResponse(out, safe=False)
 
 
 class RemoveEventView(View):

@@ -47,10 +47,6 @@ class Profile(LoginRequiredMixin, TemplateView):
         if FullDayIntake.objects.filter(date=context['today']).exists():
             context['fulldayintake'] = FullDayIntake.objects.get(date=context['today'])
         context['products_list'] = Product.objects.filter(date=context['today'])
-        # demand_pk = self.kwargs.get('pk')
-        # demand = get_object_or_404(Demand, pk=demand_pk)
-        # context['demand'] = demand
-        context["demand"] = Demand.objects.get(id=2)
         return context
 
 
@@ -60,8 +56,8 @@ class KetoAppUserUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'users/keto_app_user_form.html'
 
     def get_success_url(self):
-        # return reverse_lazy('profile')
-        return reverse_lazy('keto_app_user_demand_detail', args=[self.get_object().demand.id])
+        return reverse_lazy('profile')
+        # return reverse_lazy('keto_app_user_demand_detail', args=[self.get_object().demand.id])
 
 
 class DemandDetailView(DetailView):
