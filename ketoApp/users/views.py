@@ -60,7 +60,7 @@ class KetoAppUserUpdateView(LoginRequiredMixin, UpdateView):
         # return reverse_lazy('keto_app_user_demand_detail', args=[self.get_object().demand.id])
 
 
-class DemandDetailView(DetailView):
+class DemandDetailView(LoginRequiredMixin, DetailView):
     model = Demand
     template_name = 'users/daily-requirements.html'
 
