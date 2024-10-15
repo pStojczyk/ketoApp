@@ -164,7 +164,7 @@ class AllEventsView(View):
             out.append({
                 'title': f'\n\nTOTAL KCAL: {event.total_kcal}\nTOTAL FAT: {event.total_fat}\nTOTAL PROTEIN: {event.total_protein}\n'
                          f'TOTAL CARBS: {event.total_carbs}',
-                'start': event.start,
+                'start': event.date,
                 'url': reverse_lazy('products_list_by_date', args=[event.date]),
 
             })

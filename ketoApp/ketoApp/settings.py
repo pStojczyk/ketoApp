@@ -138,6 +138,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 LOGIN_REDIRECT_URL = 'profile'
 
+LOGIN_URL = 'login'
+
 API_ID = '644f0b01'
 
 API_KEY = 'db003bb838198634be6df9b75aeb3462'
