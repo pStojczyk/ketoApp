@@ -14,49 +14,37 @@ class KetoAppUserModelTest(TestCase):
         """Test creating user for all tests."""
         self.user = User.objects.create_user(username='testuser', password='testpassword123')
 
-    def test_create_ketoappuser(self):
+    def test_ketoappuser_is_created_by_signal(self):
         """Test creating KetoAppUser instance."""
-        keto_app_user = KetoAppUser.objects.create(
-            user=self.user,
-            weight=80,
-            height=185,
-            age=40,
+        self.assertTrue(KetoAppUser.objects.filter(user=self.user).exists())
+
+
+    def test_calculate_bmr_male(self):
+        """Test creating BMR instance for male."""
+        KetoAppUser.objects.filter(user=self.user).update(
+            weight=70,
+            height=175,
+            age=30,
             gender=KetoAppUser.GenderChoices.MALE,
+            activity=KetoAppUser.ActivityChoices.LOW,
+        )
+        keto_app_user = KetoAppUser.objects.get(user=self.user)
+
+        expected_bmr = 1650.45
+        self.assertEqual(keto_app_user.calculate_bmr(), expected_bmr)
+
+    def test_calculate_bmr_female(self):
+        """Test creating BMR instance for female."""
+        keto_app_user = KetoAppUser.objects.create(
+            weight=55,
+            height=160,
+            age=25,
+            gender=KetoAppUser.GenderChoices.FEMALE,
             activity=KetoAppUser.ActivityChoices.MEDIUM,
         )
+        expected_bmr = (9.99 * 55) + (6.25 * 160) - (4.92 * 25) - 161
+        self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
 
-        self.assertEqual(keto_app_user.user.username, 'testuser')
-        self.assertEqual(keto_app_user.weight, 80)
-        self.assertEqual(keto_app_user.height, 185)
-        self.assertEqual(keto_app_user.age, 40)
-        self.assertEqual(keto_app_user.gender, KetoAppUser.GenderChoices.MALE)
-        self.assertEqual(keto_app_user.activity, KetoAppUser.ActivityChoices.MEDIUM)
-
-
-#     def test_calculate_bmr_male(self):
-#         """Test creating BMR instance for male."""
-#         keto_app_user = KetoAppUser.objects.create(
-#             weight=70,
-#             height=175,
-#             age=30,
-#             gender=KetoAppUser.GenderChoices.MALE,
-#             activity=KetoAppUser.ActivityChoices.LOW,
-#         )
-#         expected_bmr = (9.99 * 70) + (6.25 * 175) - (4.92 * 30) + 5
-#         self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
-#
-#     def test_calculate_bmr_female(self):
-#         """Test creating BMR instance for female."""
-#         keto_app_user = KetoAppUser.objects.create(
-#             weight=55,
-#             height=160,
-#             age=25,
-#             gender=KetoAppUser.GenderChoices.FEMALE,
-#             activity=KetoAppUser.ActivityChoices.MEDIUM,
-#         )
-#         expected_bmr = (9.99 * 55) + (6.25 * 160) - (4.92 * 25) - 161
-#         self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
-#
 #     def test_calculate_daily_cmp_inactive(self):
 #         """Test creating CMP instance for inactive user."""
 #         keto_app_user = KetoAppUser.objects.create(
