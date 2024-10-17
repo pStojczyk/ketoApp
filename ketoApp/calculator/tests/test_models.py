@@ -1,12 +1,8 @@
 """
 Tests for models.
 """
-from django.test import TestCase
-from django.contrib.auth.models import User
 import datetime
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from .models import Product, FullDayIntake
 from users.models import KetoAppUser
 
