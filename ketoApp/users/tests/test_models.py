@@ -43,7 +43,7 @@ class KetoAppUserModelTest(TestCase):
 #             activity=KetoAppUser.ActivityChoices.LOW,
 #         )
 #         expected_bmr = (9.99 * 70) + (6.25 * 175) - (4.92 * 30) + 5
-#         self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
+#         self.assertEqual(keto_app_user.calculate_bmr(), expected_bmr)
 #
 #     def test_calculate_bmr_female(self):
 #         """Test creating BMR instance for female."""
@@ -55,7 +55,7 @@ class KetoAppUserModelTest(TestCase):
 #             activity=KetoAppUser.ActivityChoices.MEDIUM,
 #         )
 #         expected_bmr = (9.99 * 55) + (6.25 * 160) - (4.92 * 25) - 161
-#         self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
+#         self.assertEqual(keto_app_user.calculate_bmr(), expected_bmr)
 #
 #     def test_calculate_daily_cmp_inactive(self):
 #         """Test creating CMP instance for inactive user."""
