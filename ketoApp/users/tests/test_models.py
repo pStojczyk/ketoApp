@@ -45,6 +45,7 @@ class KetoAppUserModelTest(TestCase):
         expected_bmr = (9.99 * 55) + (6.25 * 160) - (4.92 * 25) - 161
         self.assertEqual(keto_app_user.expected_bmr(), expected_bmr)
 
+
 #     def test_calculate_daily_cmp_inactive(self):
 #         """Test creating CMP instance for inactive user."""
 #         keto_app_user = KetoAppUser.objects.create(
