@@ -15,7 +15,7 @@
                 <a class = "btn btn-outline-warning" href="{% url 'product_create' %}">Add Product <i class="bi bi-plus-square"></i></a>
             </p>
              <p class="d-inline-flex gap-1">
-                <a class = "btn btn-outline-dark" href="{% url 'summary' user.ketoappuser.id %}">SUMMARY <i class="bi bi-pencil-square"></i></a>
+                <a class = "btn btn-outline-dark" href="{% url 'summary' fulldayintake.id %}">SUMMARY <i class="bi bi-pencil-square"></i></a>
             </p>
             <br/>
                 {% for product in product_by_date %}
