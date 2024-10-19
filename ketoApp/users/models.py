@@ -44,18 +44,18 @@ class KetoAppUser(models.Model):
             activity_value = activity_values[self.activity]
             cmp_result = self.calculate_bmr() * activity_value
 
-            return cmp_result
+            return int(cmp_result)
 
     """Dzienne zapotrzebowanie na makro"""
 
     def calculate_carbs(self):
-        return (self.calculate_daily_cmp() * 0.05) // 4
+        return self.calculate_daily_cmp() * 0.05 // 4
 
     def calculate_fat(self):
-        return (self.calculate_daily_cmp() * 0.8) // 9
+        return self.calculate_daily_cmp() * 0.8 // 9
 
     def calculate_protein(self):
-        return (self.calculate_daily_cmp() * 0.15) // 4
+        return self.calculate_daily_cmp() * 0.15 // 4
 
     def update_or_create_demand(self):
         cmp = self.calculate_daily_cmp()
