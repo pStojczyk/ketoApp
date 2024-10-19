@@ -29,7 +29,7 @@ class KetoAppUser(models.Model):
         elif self.gender == 'Female':
             bmr = (9.99 * int(self.weight)) + (6.25 * int(self.height)) - (4.92 * int(self.age)) - 161
 
-        return bmr
+        return round(bmr, 2)
 
     """Całkowita dzienna przemiana materii uzytkownika"""
 
