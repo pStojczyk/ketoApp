@@ -1,16 +1,21 @@
 import datetime
+import io
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from django.http import JsonResponse
+from django.core.mail import EmailMessage
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import DeleteView, DetailView, TemplateView
+from django.views.generic import DeleteView, DetailView, FormView, TemplateView
 
-from .forms import ProductRequestForm
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+
+from .forms import EmailRequestForm, ProductRequestForm
 from .models import FullDayIntake, Product
 from .utils import GetConnection
+from ketoApp.settings import DEFAULT_FROM_EMAIL
 
 
 class ProductMacroNutrientsCreate(LoginRequiredMixin, View):
@@ -32,7 +37,6 @@ class ProductMacroNutrientsCreate(LoginRequiredMixin, View):
             product_macronutrients.save()
 
             return redirect("profile")
-
 
         return render(request, "calculator/product_nutrients_form.html", {'form': form})
 
@@ -126,11 +130,61 @@ class AllEventsView(View):
         return JsonResponse(out, safe=False)
 
 
-# class RemoveEventView(View):
-#     def get(self, request):
-#         id = request.GET.get("id")
-#         event = FullDayIntake.objects.get(id=id)
-#         event.delete()
-#         data = {}
-#
-#         return JsonResponse(data)
+class SendReportPdfView(FormView):
+    """Generating PDF report and sending email"""
+
+    template_name = 'calculator/send_email.html'
+    form_class = EmailRequestForm
+
+    def form_valid(self, form):
+        """1. Filtering product by date, retrieving email from user
+           2. Generating PDF file, adding products and summary to the file
+           3. Sending email"""
+
+        email = form.cleaned_data.get('email')
+
+        date = self.kwargs.get('date')
+
+        products = Product.objects.filter(date=date)
+        # summary = FullDayIntake.objects.filter(date=date)
+
+        buffer = io.BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
+        c.drawString(100, 800, f"Report for date: {date}")
+
+        y_position = 750
+        for product in products:
+            c.drawString(100, y_position, f"Product: {product.name}, "
+                                          f"kcal: {product.kcal}, "
+                                          f"fat: {product.fat}, "
+                                          f"carbs: {product.carbs}, "
+                                          f"protein: {product.protein}")
+            y_position -= 20
+
+        # c.drawString(f'Total kcal: {summary.total_kcal},'
+        #              f'Total fat: {summary.fat}, '
+        #              f'Total carbs: {summary.carbs}, '
+        #              f'Total protein: {summary.protein},'
+        #
+        #              )
+
+        c.showPage()
+        c.save()
+
+        buffer.seek(0)
+
+        email_subject = f"KetoApp report for {date}"
+        email_body = "Please find attached the report in PDF format."
+        email_message = EmailMessage(
+            subject=email_subject,
+            body=email_body,
+            from_email=DEFAULT_FROM_EMAIL,
+            to=[email],
+        )
+
+        email_message.attach(f"report_{date}.pdf", buffer.getvalue(), 'application/pdf')
+        email_message.send()
+
+        return render(self.request, "calculator/send_email_success.html")
+
+

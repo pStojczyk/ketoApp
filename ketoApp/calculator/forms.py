@@ -1,8 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import DateField
-from django.forms import DateInput
-from .models import Product
 
 
 def name_validator(value):
@@ -16,16 +14,13 @@ class ProductRequestForm(forms.Form):
     grams = forms.IntegerField(label="Grams")
 
 
+class EmailRequestForm(forms.Form):
+    email = forms.EmailField(widget=forms.TextInput(attrs={"placeholder": "Your e-mail"}))
+
+
 class Date(forms.DateInput):
     input_type = 'date'
 
 
 class CalendarForm(forms.Form):
     date = DateField(widget=Date)
-
-
-
-
-
-
-

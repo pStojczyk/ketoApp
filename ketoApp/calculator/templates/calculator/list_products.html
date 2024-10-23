@@ -17,6 +17,9 @@
              <p class="d-inline-flex gap-1">
                 <a class = "btn btn-outline-dark" href="{% url 'summary' fulldayintake.id %}">SUMMARY <i class="bi bi-pencil-square"></i></a>
             </p>
+             <p class="d-inline-flex gap-1">
+                <a class = "btn btn-outline-secondary" href="{% url 'send_report_pdf' %}">Generate Report <i class="bi bi-envelope-at"></i></a>
+            </p>
             <br/>
                 {% for product in product_by_date %}
                 <div class="card border-warning border-2 mb-3 bg-primary mb-3">
