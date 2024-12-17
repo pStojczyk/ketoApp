@@ -1,4 +1,6 @@
 # ketoApp 
+<h1>KETO CALCULATOR</h1>
+<img src="ketoapp.png" width="800px">
 
 ## Description
 
