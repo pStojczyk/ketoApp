@@ -6,12 +6,12 @@
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-               <h1 class="display-6">Enter your email</h1>
+               <h1 class="display-6">Enter dates and email</h1>
                 <br>
                   {{ form|crispy }}
             </fieldset>
             <div class="form-group">
-                <button class="btn btn-outline-warning" type="submit">Send email <i class="bi bi-envelope-check"></i></button>
+                <button class="btn btn-outline-warning" type="submit">Send Report <i class="bi bi-envelope-check"></i></button>
             </div>
         </form>
     </div>
