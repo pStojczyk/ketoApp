@@ -25,6 +25,10 @@
             container: "body",
             });
       },
+      dateClick: function (info) {
+                var selectedDate = info.dateStr;
+                window.location.href = '/add_product/' + selectedDate + '/';
+            }
     });
 
     calendar.render();

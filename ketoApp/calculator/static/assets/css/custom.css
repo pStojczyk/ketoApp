@@ -5,3 +5,7 @@ body {
 .test {
     background-color:#B3D2B8;
 }
+
+container-fluid {
+    margin: 0;
+}

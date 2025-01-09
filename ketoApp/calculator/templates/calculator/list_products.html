@@ -12,13 +12,10 @@
               <h1 class="display-6"> {{ date }}</h1>
             <br>
             <p class="d-inline-flex gap-1">
-                <a class = "btn btn-outline-warning" href="{% url 'product_create' %}">Add Product <i class="bi bi-plus-square"></i></a>
+                <a class = "btn btn-outline-warning" href="{% url 'product_create' selected_date=date %}">Add Product <i class="bi bi-plus-square"></i></a>
             </p>
              <p class="d-inline-flex gap-1">
                 <a class = "btn btn-outline-dark" href="{% url 'summary' fulldayintake.id %}">SUMMARY <i class="bi bi-pencil-square"></i></a>
-            </p>
-             <p class="d-inline-flex gap-1">
-                <a class = "btn btn-outline-secondary" href="{% url 'send_report_pdf' %}">Generate Report <i class="bi bi-envelope-at"></i></a>
             </p>
             <br/>
                 {% for product in product_by_date %}
