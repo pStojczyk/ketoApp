@@ -7,12 +7,12 @@
         <div class="col-sm-6">
             <h1 class="display-4">
                  <i class="bi bi-card-checklist"></i>
-                <strong>MY LIST</strong>
+                <strong>MY PRODUCT LIST</strong>
             </h1>
               <h1 class="display-6"> {{ today }}</h1>
             <br>
             <p class="d-inline-flex gap-1">
-                <a class = "btn btn-outline-warning" href="{% url 'product_create' %}">Add Product <i class="bi bi-plus-square"></i></a>
+                <a class = "btn btn-outline-warning" href="{% url 'product_create' selected_date=today %}">Add Product <i class="bi bi-plus-square"></i></a>
             </p>
              <p class="d-inline-flex gap-1">
                 {% if fulldayintake %}
@@ -43,6 +43,7 @@
             <div class="d-flex justify-content-end">
                 <div class="content-section">
                     <br>
+                    <h6> Your API token is: : {{ token }} </h6>
                     {% if user.ketoappuser.demand %}
                     <div class="card border-warning text-warning bg-primary mb-3" style="max-width: 30rem;">
                         <div class="card-header bg-danger mb-3">

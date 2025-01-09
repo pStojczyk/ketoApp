@@ -1,13 +1,14 @@
 """
 Tests for user API.
 """
+
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.urls import reverse
 from calculator.models import FullDayIntake, Product
-from .models import KetoAppUser, Demand
+from users.models import KetoAppUser, Demand
 import datetime
 
 
@@ -74,12 +75,19 @@ class ProfileViewTest(TestCase):
         self.client = Client()
         self.client.login(username='testuser', password='testpass')
 
+        self.keto_app_user = self.user.ketoappuser
+
         self.today = datetime.date.today()
 
-        self.product1 = Product.objects.create(name='Product1', date=self.today, user=self.user)
-        self.product2 = Product.objects.create(name='Product2', date=self.today, user=self.user)
+        self.product1 = Product.objects.create(name='Product1', date=self.today)
+        self.product2 = Product.objects.create(name='Product2', date=self.today)
 
-        self.fulldayintake = FullDayIntake.objects.create(self.today, self.user, [self.product1, self.product2])
+        self.product1.user.add(self.keto_app_user)
+        self.product2.user.add(self.keto_app_user)
+
+        self.fulldayintake = FullDayIntake.objects.create(date=self.today, user=self.keto_app_user)
+
+        self.fulldayintake.product.set([self.product1, self.product2])
 
     def test_profile_view_renders_correct_template(self):
         """Test profile uses correct template"""
@@ -100,7 +108,7 @@ class ProfileViewTest(TestCase):
 
     def test_profile_view_without_fulldayintake(self):
         """Test missing fulldayintake in context view"""
-        FullDayIntake.object.filter(date=self.today).delete()
+        FullDayIntake.objects.filter(date=self.today).delete()
 
         response = self.client.get(reverse('profile'))
 
@@ -108,17 +116,17 @@ class ProfileViewTest(TestCase):
 
     def test_profile_view_without_products(self):
         """Test missing products in context view"""
-        Product.object.filter(date=self.today).delete()
+        Product.objects.filter(date=self.today).delete()
 
         response = self.client.get(reverse('profile'))
 
-        self.assertEqual(len(response.context['product_list']), 0)
+        self.assertEqual(len(response.context['products_list']), 0)
 
-    # def test_profile_redirects_if_not_logged_in(self):
-    #     """Test correct redirection when user not logged in"""
-    #     self.client.logout()
-    #     response = self.client.get(reverse('profile'))
-    #     self.assertRedirects(response, reverse('login'))
+    def test_profile_redirects_if_not_logged_in(self):
+        """Test correct redirection when user not logged in"""
+        self.client.logout()
+        response = self.client.get(reverse('profile'))
+        self.assertRedirects(response, f'{reverse("login")}?next={reverse("profile")}')
 
 
 class KetoAppUserUpdateViewTest(TestCase):
@@ -129,14 +137,14 @@ class KetoAppUserUpdateViewTest(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.client.login(username='testuser', password='testpass')
 
-        self.keto_app_user = KetoAppUser.objects.create(
-            user=self.user,
+        KetoAppUser.objects.filter(user=self.user).update(
             weight=70,
             height=180,
             age=40,
-            gender=KetoAppUser.ActivityChoices.FEMALE,
+            gender=KetoAppUser.GenderChoices.FEMALE,
             activity=KetoAppUser.ActivityChoices.MEDIUM,
         )
+        self.keto_app_user = KetoAppUser.objects.get(user=self.user)
 
         self.update_url = reverse('keto_app_user_update', kwargs={'pk': self.keto_app_user.pk})
 
@@ -153,12 +161,13 @@ class KetoAppUserUpdateViewTest(TestCase):
             'weight': 70,
             'height': 180,
             'age': 40,
-            'gender': KetoAppUser.ActivityChoices.FEMALE,
+            'gender': KetoAppUser.GenderChoices.FEMALE,
             'activity': KetoAppUser.ActivityChoices.MEDIUM,
         }
 
         response = self.client.post(self.update_url, updated_data)
 
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('profile'))
 
         self.keto_app_user.refresh_from_db()
@@ -166,7 +175,7 @@ class KetoAppUserUpdateViewTest(TestCase):
         self.assertEqual(self.keto_app_user.weight, 70)
         self.assertEqual(self.keto_app_user.height, 180)
         self.assertEqual(self.keto_app_user.age, 40)
-        self.assertEqual(self.keto_app_user.gender, KetoAppUser.ActivityChoices.FEMALE)
+        self.assertEqual(self.keto_app_user.gender, KetoAppUser.GenderChoices.FEMALE)
         self.assertEqual(self.keto_app_user.activity, KetoAppUser.ActivityChoices.MEDIUM)
 
     def test_update_keto_app_user_with_invalid_data(self):
@@ -175,35 +184,36 @@ class KetoAppUserUpdateViewTest(TestCase):
             'weight': -70,
             'height': 180,
             'age': 40,
-            'gender': KetoAppUser.ActivityChoices.FEMALE,
+            'gender': KetoAppUser.GenderChoices.FEMALE,
             'activity': KetoAppUser.ActivityChoices.MEDIUM,
         }
 
         response = self.client.post(self.update_url, invalid_data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'weight', 'Value must be grater than or equal to 0.')
+        form = response.context.get('form')
+        self.assertFormError(form, 'weight', 'Ensure this value is greater than or equal to 0.')
 
     def test_update_keto_app_user_with_None(self):
         """Test incorrect update of keto_app_user"""
         invalid_data = {
-            'weight': None,
+            'weight': "",
             'height': 180,
             'age': 40,
-            'gender': KetoAppUser.ActivityChoices.FEMALE,
+            'gender': KetoAppUser.GenderChoices.FEMALE,
             'activity': KetoAppUser.ActivityChoices.MEDIUM,
         }
 
         response = self.client.post(self.update_url, invalid_data)
-
+        form = response.context['form']
+        self.assertFormError(form, 'weight', 'This field is required.')
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'weight', 'Please fill out this field.')
 
-    # def test_update_keto_app_user_redirects_if_not_logged_in(self):
-    #     """Test correct redirection when user not logged in"""
-    #     self.client.logout()
-    #     response = self.client.post(self.update_url)
-    #     self.assertRedirects(response, reverse('login'))
+    def test_update_keto_app_user_redirects_if_not_logged_in(self):
+        """Test correct redirection when user not logged in"""
+        self.client.logout()
+        response = self.client.post(self.update_url)
+        self.assertRedirects(response, f'{reverse("login")}?next={self.update_url}')
 
 
 class DemandDetailView(TestCase):
@@ -212,21 +222,16 @@ class DemandDetailView(TestCase):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='testpass')
 
-        self.keto_app_user = KetoAppUser.objects.create(
-            user=self.user,
-            weight=80,
-            height=185,
-            age=30,
-            gender=KetoAppUser.ActivityChoices.MALE,
-            activity=KetoAppUser.ActivityChoices.MEDIUM,
-        )
+        self.user.save()
 
-        self.demand = Demand.object.create(
-            user=self.user,
-            kcal=2900,
-            fat=127,
-            protein=108,
-            carbs=36
+        self.keto_app_user = KetoAppUser.objects.get(user=self.user)
+
+        self.demand = Demand.objects.create(
+            keto_app_user=self.keto_app_user,
+            kcal=2500,
+            fat=80,
+            protein=100,
+            carbs=50,
         )
 
         self.detail_url = reverse('keto_app_user_demand_detail', kwargs={'pk': self.demand.pk})
@@ -241,8 +246,7 @@ class DemandDetailView(TestCase):
         """Test view if login required"""
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 302)
-        # self.assertEqual(response.status_code, 404)
-        self.assertRedirects(response, reverse('login'))
+        self.assertRedirects(response, f'/?next={self.detail_url}')
 
     def test_view_context_contains_demand(self):
         """Test view context with correct data"""
@@ -250,19 +254,13 @@ class DemandDetailView(TestCase):
         response = self.client.get(self.detail_url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('demand', response.context)
-        self.assertEqual(response['demand'], self.demand)
+        self.assertEqual(response.context['demand'], self.demand)
 
     def test_access_demand_with_wrong_user(self):
         """Test access to demand with foreign user"""
         self.other_user = User.objects.create_user(username='otheruser', password='otherpass')
-        self.other_keto_app_user = KetoAppUser.objects.create(
-            user=self.other_user,
-            weight=90,
-            height=175,
-            age=35,
-            gender=KetoAppUser.GenderChoices.MALE,
-            activity=KetoAppUser.ActivityChoices.LOW,
-        )
+        self.other_user.save()
+        self.other_keto_app_user = KetoAppUser.objects.get(user=self.other_user)
 
         self.other_demand = Demand.objects.create(
             keto_app_user=self.other_keto_app_user,

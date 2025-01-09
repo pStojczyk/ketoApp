@@ -1,8 +1,10 @@
 """
-Tests for models.
+Tests for user.models.
 """
 from django.test import TestCase
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+
 from users.models import KetoAppUser, Demand
 
 
@@ -16,6 +18,10 @@ class KetoAppUserModelTest(TestCase):
     def test_ketoappuser_is_created_by_signal(self):
         """Test creating KetoAppUser instance."""
         self.assertTrue(KetoAppUser.objects.filter(user=self.user).exists())
+
+    def test_token_is_created_by_signal(self):
+        """Test creating Token instance while creating User."""
+        self.assertTrue(Token.objects.filter(user=self.user).exists())
 
     def test_calculate_bmr_male(self):
         """Test creating BMR instance for male."""
