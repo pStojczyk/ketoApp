@@ -15,7 +15,13 @@
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
       initialView: 'dayGridMonth',
-      events: '/all_events',
+      events: [
+        {
+          title: 'Long Event',
+          start: '2025-01-07',
+          end: '2025-01-10'
+        },
+      ],
       eventColor: '#D37C26',
       eventDidMount: function(info) {
           $(info.el).popover({

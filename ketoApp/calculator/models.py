@@ -57,5 +57,5 @@ class FullDayIntake(models.Model):
     total_fat = models.PositiveIntegerField(null=True)
     total_protein = models.PositiveIntegerField(null=True)
     product = models.ManyToManyField(Product, null=False)
-    user = models.OneToOneField(KetoAppUser, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(KetoAppUser, on_delete=models.CASCADE, null=True)
     start = models.DateField(null=True, blank=True)

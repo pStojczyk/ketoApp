@@ -130,7 +130,7 @@ class FullDayIntakeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FullDayIntake
-        fields = ['title', 'date', 'url', 'total_kcal', 'total_fat', 'total_protein', 'total_carbs']
+        fields = ['id', 'title', 'date', 'url', 'total_kcal', 'total_fat', 'total_protein', 'total_carbs']
 
     def get_title(self, obj):
         """Generate a title with total macronutrients for the event."""

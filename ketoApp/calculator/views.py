@@ -20,6 +20,7 @@ from .forms import EmailRequestForm, ProductRequestForm
 from .models import FullDayIntake, Product
 from .utils import GetConnection
 from .tasks import send_report
+from API.serializers import FullDayIntakeSerializer
 
 
 class ProductMacroNutrientsCreate(LoginRequiredMixin, View):
@@ -251,7 +252,10 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         """
 
         context = super().get_context_data(**kwargs)
-        context['events'] = FullDayIntake.objects.filter(user=self.request.user.ketoappuser)
+        serializer = FullDayIntakeSerializer(FullDayIntake.objects.filter(user=self.request.user.ketoappuser), many=True)
+        context['events'] = serializer.data
+        print("###"*10)
+        print(serializer.data)
         return context
 
 

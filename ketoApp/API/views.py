@@ -160,6 +160,6 @@ class AllEventsAPIView(APIView):
         user = request.user.ketoappuser
         events = FullDayIntake.objects.filter(user=user)
 
-        serializer = FullDayIntakeSerializer(events, many=True, context={'request': request})
+        serializer = FullDayIntakeSerializer(events, many=True)
 
         return Response(serializer.data)
