@@ -30,18 +30,18 @@
           <li class="nav-item">
         <a class="nav-item nav-link text-dark " href="{% url 'keto_app_user_update' user.ketoappuser.id %}"><i class="bi bi-person-arms-up"></i> Body details </a>
           </li>
-
           <li class="nav-item">
         <a class="nav-item nav-link text-dark" href="{% url 'calendar' %}"><i class="bi bi-calendar-day-fill"></i> Calendar </a>
         </li>
             <li class="nav-item">
-            <form class="container-fluid" id="logout" method="post" action="{% url 'logout' %}">
+                <a class="nav-item nav-link text-dark" href="{% url 'send_report_pdf' %}">Generate Report <i class="bi bi-envelope-at-fill"></i></a>
+             </li>
+            <li class="nav-item">
+            <form class="container-fluid" id="logout" method="post" action="{% url 'logout' %}" style="margin: 0">
                     {% csrf_token %}
-                <button type="submit" form="logout" class="nav-item nav-link justify-content-md-end text-dark"> Logout <i class="bi bi-box-arrow-right"></i></button>
+                <button type="submit" form="logout" class="nav-item nav-link text-dark"> Logout <i class="bi bi-box-arrow-right"></i></button>
             </form>
-
             </li>
-
           {% else %}
             <div class="navbar-nav">
                 <a class="nav-item nav-link text-dark" href="{% url 'login' %}"><i class="bi bi-person-lock"></i> Login</a>
@@ -51,6 +51,7 @@
                 <a class="nav-item nav-link text-dark" href="{% url 'register' %}"><i class="bi bi-person-add"></i> Register</a>
             </div>
  </ul>
+      </li>
             {% endif %}
 
 
