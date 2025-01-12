@@ -6,7 +6,7 @@ displayed correctly. Additionally, users can generate PDF reports of their diet 
 
 The views use Django's class-based views (CBVs), background tasks (via Celery) to process and display relevant data to
 the user. The views use templates for rendering the UI and redirection for handling user navigation between pages."""
-
+import json
 from datetime import date
 from django import forms
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -254,8 +254,6 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         serializer = FullDayIntakeSerializer(FullDayIntake.objects.filter(user=self.request.user.ketoappuser), many=True)
         context['events'] = serializer.data
-        print("###"*10)
-        print(serializer.data)
         return context
 
 

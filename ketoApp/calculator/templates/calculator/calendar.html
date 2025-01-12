@@ -1,44 +1,38 @@
 {% extends 'calculator/base.html' %}
 {% block content %}
-  <head>
-    <meta charset='utf-8' />
-  </head>
+<head>
+    <meta charset='utf-8'/>
+</head>
 
 <style>
-  body{
-	height:5px;
-}
+    body{
+      height:5px;
+  }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      events: [
-        {
-          title: 'Long Event',
-          start: '2025-01-07',
-          end: '2025-01-10'
-        },
-      ],
-      eventColor: '#D37C26',
-      eventDidMount: function(info) {
-          $(info.el).popover({
-            title: info.event.title,
-            placement: "top",
-            trigger: "hover",
-            container: "body",
-            });
-      },
-      dateClick: function (info) {
-                var selectedDate = info.dateStr;
-                window.location.href = '/add_product/' + selectedDate + '/';
-            }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: {{ events|safe }},
+        eventColor: '#D37C26',
+<!--        eventDidMount: function(info) {-->
+<!--            $(info.el).popover({-->
+<!--              title: info.event.title,-->
+<!--              placement: "top",-->
+<!--              trigger: "hover",-->
+<!--              container: "body",-->
+<!--              });-->
+<!--        },-->
+<!--        dateClick: function (info) {-->
+<!--                  var selectedDate = info.dateStr;-->
+<!--                  window.location.href = '/add_product/' + selectedDate + '/';-->
+<!--              }-->
+      });
 
-    calendar.render();
-    });
+      calendar.render();
+      });
 
 </script>
 <div id='calendar'></div>
