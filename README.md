@@ -14,6 +14,10 @@ This repository is a Django application that enables the user to:
 - See full calendar with daily calorie summary
 - Generate pdf report for specific date with daily summary all eaten products
 - Send user an email with generated pdf report using Celery task.
+- Monitor and manage Celery tasks using Celery Flower.
+- Schedule periodic tasks with Celery Beat (tokens are generated every 30 days).
+- Utilize REST API for all interactions with the application.
+- Implement token authentication for secure access to the API.
 - The project includes unit tests to ensure code reliability and correctness.
 - The project utilizes Docker for containerization and Docker Compose for managing 
   multi-container application environments. This ensures consistent and reliable 
@@ -23,7 +27,11 @@ This repository is a Django application that enables the user to:
 
 - **Python 3.11**
 - **Django 5.3** - Web framework for development. 
+- **Django REST Framework** - For building RESTful APIs.
 - **Celery 5.4.0** - For asynchronous task processing.
+- **Celery Beat** - For scheduling periodic tasks.
+- **Celery Flower** - For monitoring and managing Celery tasks.
+- **Redis** - broker for handling tasks with Celery.
 - **Postgres 15.4** - Database for storing application data.
 - **Docker 24.0.7** - For containerization.
 - **Docker-compose v2.23.3-desktop.2** - To manage multi-container environments.
