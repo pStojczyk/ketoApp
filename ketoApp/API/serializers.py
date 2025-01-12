@@ -127,10 +127,12 @@ class FullDayIntakeSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
     start = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
+    details = serializers.SerializerMethodField()
 
     class Meta:
         model = FullDayIntake
-        fields = ['title', 'start']
+        fields = ['title', 'start', 'url', 'details']
 
     def get_title(self, obj):
         """Generate a title with total macronutrients for the event."""
@@ -143,4 +145,11 @@ class FullDayIntakeSerializer(serializers.ModelSerializer):
 
     def get_start(self, obj):
         return obj.date.strftime("%Y-%m-%d")
+
+    def get_url(self, obj):
+        """Generate the URL linking to the list of products for that date."""
+        return reverse_lazy('products_list_by_date', args=[obj.date])
+
+    def get_details(self, obj):
+        return f"Uwagi: {obj.remarks if hasattr(obj, 'remarks') else 'Brak dodatkowych informacji'}"
 

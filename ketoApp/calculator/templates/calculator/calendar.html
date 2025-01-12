@@ -18,17 +18,23 @@
         events: {{ events|safe }},
         eventColor: '#D37C26',
 <!--        eventDidMount: function(info) {-->
-<!--            $(info.el).popover({-->
-<!--              title: info.event.title,-->
-<!--              placement: "top",-->
-<!--              trigger: "hover",-->
-<!--              container: "body",-->
-<!--              });-->
-<!--        },-->
-<!--        dateClick: function (info) {-->
-<!--                  var selectedDate = info.dateStr;-->
-<!--                  window.location.href = '/add_product/' + selectedDate + '/';-->
-<!--              }-->
+<!--            console.log('Event mounted:', info.event.title, info.event.extendedProps.details);-->
+<!--            if (info.event.extendedProps.details) {-->
+<!--                    $(info.el).popover({-->
+<!--                        title: info.event.title,-->
+<!--                        content: info.event.extendedProps.details,-->
+<!--                        placement: "top",-->
+<!--                        trigger: "hover",-->
+<!--                        container: "body",-->
+<!--                    });-->
+<!--                }-->
+<!--                },-->
+        eventClick: function(info) {
+            if (info.event.url) {
+                window.location.href = info.event.url;
+                info.jsEvent.preventDefault();
+            }
+        },
       });
 
       calendar.render();

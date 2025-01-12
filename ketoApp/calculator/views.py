@@ -252,7 +252,10 @@ class CalendarView(LoginRequiredMixin, TemplateView):
         """
 
         context = super().get_context_data(**kwargs)
-        serializer = FullDayIntakeSerializer(FullDayIntake.objects.filter(user=self.request.user.ketoappuser), many=True)
+        serializer = FullDayIntakeSerializer(FullDayIntake.objects.filter(user=self.request.user.ketoappuser),
+                                             many=True,
+                                             context={'request': self.request},
+                                             )
         context['events'] = serializer.data
         return context
 
