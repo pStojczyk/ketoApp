@@ -17,6 +17,7 @@ class TestProductSerializer(APITestCase):
     """
     Test for the ProductSerializer includes tests for creating, updating and serializing Product instances.
     """
+
     @patch('calculator.utils.GetConnection.get_connection')
     def test_create_serializer_valid(self, mock_get_connection):
         """
@@ -92,6 +93,7 @@ class TestParameterSerializer(APITestCase):
     - Retrieval of data using the serializer.
     - Updating of `KetoAppUser` instances using the serializer.
     """
+
     def setUp(self):
         """
         Set up creates a `User` instance and configures related `KetoAppUser` fields
@@ -152,6 +154,7 @@ class DemandSerializerTest(APITestCase):
     - Deserialization of valid data into `Demand` instances.
     - Validation of invalid data during deserialization.
     """
+
     def setUp(self):
         """
         Set up a test user, associated `KetoAppUser` and `Demand` instance.
@@ -223,7 +226,7 @@ class FullDayIntakeSerializerTest(APITestCase):
         """Create an instance of FullDayIntake and a user for testing."""
         self.user = User.objects.create_user(username='testuser', password='testpass')
         self.full_day_intake = FullDayIntake.objects.create(
-            date='2025-01-01',
+            date=date(2025, 1, 1),
             total_kcal=2000,
             total_fat=70,
             total_protein=150,
@@ -236,20 +239,14 @@ class FullDayIntakeSerializerTest(APITestCase):
         """Test that the serializer contains the appropriate fields."""
         data = self.serializer.data
         self.assertIn('title', data)
-        self.assertIn('date', data)
+        self.assertIn('start', data)
         self.assertIn('url', data)
-        self.assertIn('total_kcal', data)
-        self.assertIn('total_fat', data)
-        self.assertIn('total_protein', data)
-        self.assertIn('total_carbs', data)
+        self.assertIn('details', data)
 
     def test_get_title(self):
         """Test the get_title method in the serializer."""
         expected_title = (
-            'TOTAL KCAL: 2000\n'
-            'TOTAL FAT: 70\n'
-            'TOTAL PROTEIN: 150\n'
-            'TOTAL CARBS: 250'
+            'TOTAL KCAL: 2000'
         )
         self.assertEqual(self.serializer.get_title(self.full_day_intake), expected_title)
 
@@ -261,17 +258,10 @@ class FullDayIntakeSerializerTest(APITestCase):
     def test_serializer_output(self):
         """Test the complete output of the serializer."""
         expected_output = {
-            'title': (
-                'TOTAL KCAL: 2000\n'
-                'TOTAL FAT: 70\n'
-                'TOTAL PROTEIN: 150\n'
-                'TOTAL CARBS: 250'
-            ),
-            'date': '2025-01-01',
+            'title': 'TOTAL KCAL: 2000',
+            'start': '2025-01-01',
             'url': reverse('products_list_by_date', args=[self.full_day_intake.date]),
-            'total_kcal': 2000,
-            'total_fat': 70,
-            'total_protein': 150,
-            'total_carbs': 250,
+            'details': 'TOTAL FAT: 70,\nTOTAL PROTEIN: 150,\nTOTAL CARBS: 250',
         }
+
         self.assertEqual(self.serializer.data, expected_output)

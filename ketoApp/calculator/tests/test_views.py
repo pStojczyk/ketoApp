@@ -14,8 +14,6 @@ from django.contrib.auth.models import User
 from calculator.forms import ProductRequestForm
 from calculator.models import FullDayIntake, Product
 
-from users.models import KetoAppUser
-
 
 class ProductMacroNutrientsCreateTests(TestCase):
     """Test which allows users to create Product instances with specified macronutrient data."""
@@ -622,8 +620,24 @@ class CalendarViewTests(TestCase):
         self.assertIn('events', response.context)
 
         events = response.context['events']
-        self.assertIn(self.fulldayintake1, events)
-        self.assertIn(self.fulldayintake2, events)
+
+        expected_events = [
+            {
+                'title': f'TOTAL KCAL: {self.fulldayintake1.total_kcal}',
+                'start': self.fulldayintake1.date,
+                'url': f'/list/{self.fulldayintake1.date}/',
+                'details': f'TOTAL FAT: {self.fulldayintake1.total_fat},\nTOTAL PROTEIN: {self.fulldayintake1.total_protein},\nTOTAL CARBS: {self.fulldayintake1.total_carbs}'
+            },
+            {
+                'title': f'TOTAL KCAL: {self.fulldayintake2.total_kcal}',
+                'start': self.fulldayintake2.date,
+                'url': f'/list/{self.fulldayintake2.date}/',
+                'details': f'TOTAL FAT: {self.fulldayintake2.total_fat},\nTOTAL PROTEIN: {self.fulldayintake2.total_protein},\nTOTAL CARBS: {self.fulldayintake2.total_carbs}'
+            }
+        ]
+
+        for expected_event in expected_events:
+            self.assertIn(expected_event, events)
 
     def test_calendar_view_unauthenticated(self):
         """
@@ -650,7 +664,7 @@ class CalendarViewTests(TestCase):
         self.assertTemplateUsed(response, 'calculator/calendar.html')
 
         self.assertIn('events', response.context)
-        self.assertEqual(response.context['events'].count(), 0)
+        self.assertEqual(len(response.context['events']), 0)
 
 
 class SendReportPdfViewTests(TestCase):

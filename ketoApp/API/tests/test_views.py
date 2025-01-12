@@ -2,7 +2,7 @@
 Test for the API ViewSets related to the calculator and user management modules in the Django application.
 """
 from unittest.mock import patch
-
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
@@ -285,10 +285,11 @@ class AllEventsAPIViewTest(APITestCase):
         self.user = User.objects.create_user(username='testuser', password='testpass')
 
         self.token = Token.objects.get(user=self.user)
-        self.client = APIClient()
+
+        # self.client = APIClient()
 
         self.event1 = FullDayIntake.objects.create(
-            date='2025-01-01',
+            date=datetime.strptime('2025-01-01', '%Y-%m-%d').date(),
             total_kcal=2000,
             total_fat=70,
             total_protein=150,
@@ -297,7 +298,7 @@ class AllEventsAPIViewTest(APITestCase):
         )
 
         self.event2 = FullDayIntake.objects.create(
-            date='2025-01-02',
+            date=datetime.strptime('2025-01-02', '%Y-%m-%d').date(),
             total_kcal=1800,
             total_fat=60,
             total_protein=140,
@@ -320,6 +321,7 @@ class AllEventsAPIViewTest(APITestCase):
         """Test retrieving events when there are no FullDayIntake instances for the user."""
 
         new_user = User.objects.create_user(username='newuser', password='newpass')
+        Token.objects.filter(user=new_user).delete()
         new_token = Token.objects.create(user=new_user)
 
         url = f"{reverse('all-events')}?token={new_token.key}"
@@ -333,4 +335,4 @@ class AllEventsAPIViewTest(APITestCase):
         url = f"{reverse('all-events')}"
         response = self.client.get(url, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
