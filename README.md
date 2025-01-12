@@ -32,7 +32,7 @@ This repository is a Django application that enables the user to:
 - **Celery Beat** - For scheduling periodic tasks.
 - **Celery Flower** - For monitoring and managing Celery tasks.
 - **Redis** - broker for handling tasks with Celery.
-- **Postgres 15.4** - Database for storing application data.
+- **PostgreSQL 15.4** - Database for storing application data.
 - **Docker 24.0.7** - For containerization.
 - **Docker-compose v2.23.3-desktop.2** - To manage multi-container environments.
 - **JavaScript** - For dynamic web components.
