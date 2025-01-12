@@ -17,18 +17,18 @@
         initialView: 'dayGridMonth',
         events: {{ events|safe }},
         eventColor: '#D37C26',
-<!--        eventDidMount: function(info) {-->
-<!--            console.log('Event mounted:', info.event.title, info.event.extendedProps.details);-->
-<!--            if (info.event.extendedProps.details) {-->
-<!--                    $(info.el).popover({-->
-<!--                        title: info.event.title,-->
-<!--                        content: info.event.extendedProps.details,-->
-<!--                        placement: "top",-->
-<!--                        trigger: "hover",-->
-<!--                        container: "body",-->
-<!--                    });-->
-<!--                }-->
-<!--                },-->
+     eventDidMount: function(info) {
+    if (info.event.extendedProps.details) {
+
+        var popover = new bootstrap.Popover(info.el, {
+            title: info.event.title,
+            content: info.event.extendedProps.details,
+            placement: 'top',
+            trigger: 'hover',
+            container: 'body',
+        });
+    }
+},
         eventClick: function(info) {
             if (info.event.url) {
                 window.location.href = info.event.url;

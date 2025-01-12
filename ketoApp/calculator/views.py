@@ -232,7 +232,7 @@ class CalendarView(LoginRequiredMixin, TemplateView):
     """
     This view allows logged-in users to see a calendar that highlights days with
     `FullDayIntake` events. Each day with a `FullDayIntake` entry is displayed as an event
-    on the calendar. The view is rendered using the 'calendar2.html' template.
+    on the calendar. The view is rendered using the 'calendar.html' template.
 
     Attributes:
         template_name (str): The path to the template used to render the calendar view.

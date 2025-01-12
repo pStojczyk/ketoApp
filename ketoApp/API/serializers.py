@@ -135,15 +135,11 @@ class FullDayIntakeSerializer(serializers.ModelSerializer):
         fields = ['title', 'start', 'url', 'details']
 
     def get_title(self, obj):
-        """Generate a title with total macronutrients for the event."""
-        return (
-            f'TOTAL KCAL: {obj.total_kcal}\n'
-            f'TOTAL FAT: {obj.total_fat}\n'
-            f'TOTAL PROTEIN: {obj.total_protein}\n'
-            f'TOTAL CARBS: {obj.total_carbs}'
-        )
+        """Generate a title in popover."""
+        return f"TOTAL KCAL: {obj.total_kcal}"
 
     def get_start(self, obj):
+        """Generates event date"""
         return obj.date.strftime("%Y-%m-%d")
 
     def get_url(self, obj):
@@ -151,5 +147,10 @@ class FullDayIntakeSerializer(serializers.ModelSerializer):
         return reverse_lazy('products_list_by_date', args=[obj.date])
 
     def get_details(self, obj):
-        return f"Uwagi: {obj.remarks if hasattr(obj, 'remarks') else 'Brak dodatkowych informacji'}"
+        """Generate additional details in popover"""
+        return (
+            f'TOTAL FAT: {obj.total_fat},\n'
+            f'TOTAL PROTEIN: {obj.total_protein},\n'
+            f'TOTAL CARBS: {obj.total_carbs}'
+        )
 
