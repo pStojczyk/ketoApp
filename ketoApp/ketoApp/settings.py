@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_sass',
     'widget_tweaks',
     'django_celery_beat',
+    'API.apps.ApiConfig',
 ]
 
 
