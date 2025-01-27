@@ -184,8 +184,8 @@ CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND ")
 # CELERY_TASK_SERIALIZER = os.environ.get("CELERY_TASK_SERIALIZER")
 
 CELERY_BEAT_SCHEDULE = {
-    "sample_task": {
-        "task": "core.tasks.sample_task",
+    "regenerate_tokens": {
+        "task": "ketoApp.api.tasks.regenerate_tokens",
         "schedule": crontab(day_of_month='1', hour=0, minute=0),
     },
 }
